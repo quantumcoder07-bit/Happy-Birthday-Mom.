@@ -3,66 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy Birthday, Mom! ✨</title>
+    <title>Happy Birthday Mom! ✨</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #ff758c; --secondary: #ff7eb3; --glass: rgba(255, 255, 255, 0.15); }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: 'Poppins', sans-serif; background: #000; }
-        .bg-gradient { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(45deg, #ff9a9e, #fad0c4, #ffecd2, #fcb69f); background-size: 400% 400%; animation: gradientBG 15s ease infinite; z-index: -1; }
-        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        .container { height: 100vh; display: flex; justify-content: center; align-items: center; perspective: 1000px; }
-        .card { background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 30px; padding: 40px; text-align: center; color: #444; box-shadow: 0 25px 45px rgba(0,0,0,0.1); max-width: 450px; width: 85%; transform-style: preserve-3d; transition: transform 0.1s; }
-        h1 { font-family: 'Dancing Script', cursive; font-size: 3.5rem; color: #d63384; margin: 0; }
-        p { font-size: 1.1rem; line-height: 1.6; color: #333; margin-top: 20px; }
-        .btn-celebrate { margin-top: 25px; padding: 15px 35px; border: none; border-radius: 50px; background: #d63384; color: white; font-weight: 600; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(214, 51, 132, 0.3); }
-        .btn-celebrate:hover { transform: scale(1.05); background: #b02a6b; }
+        :root { --pink-bg: #fff0f3; --dark-pink: #ff4d6d; --gold: #d4af37; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; font-family: 'Poppins', sans-serif; background-color: var(--pink-bg); overflow-x: hidden; }
+        
+        #screen1 { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        #screen2 { display: none; flex-direction: column; align-items: center; padding: 20px; opacity: 0; transition: opacity 1s; min-height: 100vh; position: relative;}
+
+        .card { background: white; padding: 30px; border-radius: 25px; text-align: center; box-shadow: 0 10px 30px rgba(255,77,109,0.2); width: 90%; max-width: 400px; margin-top: 20px; border: 2px solid #ffccd5; }
+        h1 { font-family: 'Dancing Script', cursive; color: var(--dark-pink); font-size: 2.8rem; margin: 10px 0; }
+        
+        .cake { position: relative; width: 120px; height: 80px; background: #f4d35e; border-radius: 10px 10px 0 0; margin: 40px auto 10px; }
+        .cake::before { content: ""; position: absolute; width: 130px; height: 15px; background: #faf0ca; top: 25px; left: -5px; border-radius: 20px; }
+        .candle { position: absolute; width: 8px; height: 30px; background: #ff4d6d; top: -30px; left: 56px; }
+        .flame { position: absolute; width: 12px; height: 18px; background: orange; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; top: -18px; left: -2px; animation: flicker 0.1s infinite; }
+        @keyframes flicker { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); opacity: 0.8; } }
+
+        .reasons-list { margin-top: 20px; text-align: left; width: 100%; max-width: 350px; }
+        .reason { opacity: 0; transform: translateY(10px); transition: 0.8s all ease; margin-bottom: 12px; color: #444; font-size: 0.95rem; display: flex; align-items: center; font-weight: 400; }
+        .reason.show { opacity: 1; transform: translateY(0); }
+        .reason::before { content: "💖"; margin-right: 10px; }
+
+        .btn { background: var(--dark-pink); color: white; border: none; padding: 16px 45px; border-radius: 50px; font-size: 1.1rem; cursor: pointer; box-shadow: 0 5px 15px rgba(255,77,109,0.3); z-index: 100; }
+        .save-btn { background: white; color: var(--dark-pink); border: 2px solid var(--dark-pink); padding: 10px 20px; border-radius: 20px; font-size: 0.8rem; margin-top: 30px; cursor: pointer; visibility: hidden; opacity: 0; transition: 0.5s; }
+
+        .balloon { position: absolute; width: 40px; height: 55px; border-radius: 50%; opacity: 0.6; bottom: -100px; animation: floatUp 7s infinite ease-in; z-index: -1; }
+        @keyframes floatUp { from { bottom: -100px; transform: translateX(0); } to { bottom: 110vh; transform: translateX(30px); } }
     </style>
 </head>
 <body>
 
-    <audio id="birthdayMusic" loop>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    <audio id="bdayMusic" loop>
+        <source src="https://cdn.pixabay.com/audio/2022/01/21/audio_403c407817.mp3" type="audio/mpeg">
     </audio>
 
-    <div class="bg-gradient"></div>
+    <div id="screen1">
+        <h1 style="font-size: 2rem; color: #555;">To My Queen...</h1>
+        <button class="btn" onclick="start()">Open Your Gift 🎁</button>
+    </div>
 
-    <div class="container">
-        <div class="card" id="card">
-            <h1>Happy Birthday, Mom!</h1>
-            <p>
-                To the one who held my hand first,<br>
-                And taught my heart how to fly.<br>
-                In your smile, I see the sun,<br>
-                In your love, I find my sky.<br><br>
-                <span style="font-style: italic; font-weight: 600; color: #d63384;">
-                    You are my anchor and my inspiration.
-                </span>
-            </p>
-            <button class="btn-celebrate" onclick="triggerMagic()">Press for a Surprise ✨</button>
+    <div id="screen2">
+        <div class="card" id="captureArea">
+            <div class="cake"><div class="candle"><div class="flame"></div></div></div>
+            <h1>Happy Birthday!</h1>
+            <p style="color: #777; margin-bottom: 5px;">To the world's best Mom</p>
+            <div class="reasons-list" id="reasons">
+                <div class="reason">Your love is my greatest strength.</div>
+                <div class="reason">You make every day feel like a celebration.</div>
+                <div class="reason">You are my biggest supporter and best friend.</div>
+                <div class="reason">Your wisdom guides me through everything.</div>
+                <div class="reason">You are the heart and soul of our family.</div>
+            </div>
+            <p style="margin-top: 20px; font-weight: bold; color: var(--dark-pink);">I Love You Always! ❤️</p>
         </div>
+        <button id="shotBtn" class="save-btn" onclick="saveAsImage()">📸 Save as Memory</button>
     </div>
 
     <script>
-        const music = document.getElementById('birthdayMusic');
-        const card = document.getElementById('card');
+        function start() {
+            document.getElementById('bdayMusic').play();
+            document.getElementById('screen1').style.display = 'none';
+            const s2 = document.getElementById('screen2');
+            s2.style.display = 'flex';
+            setTimeout(() => { 
+                s2.style.opacity = '1'; 
+                showReasons(); 
+                document.getElementById('shotBtn').style.visibility = 'visible';
+                document.getElementById('shotBtn').style.opacity = '1';
+            }, 50);
 
-        function triggerMagic() {
-            music.play();
-            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-            var end = Date.now() + (3 * 1000);
-            (function frame() {
-                confetti({ particleCount: 2, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ff0000', '#ff758c'] });
-                confetti({ particleCount: 2, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ff0000', '#ff758c'] });
-                if (Date.now() < end) { requestAnimationFrame(frame); }
-            }());
+            confetti({ particleCount: 200, spread: 100, origin: { y: 0.7 } });
+            for(let i=0; i<20; i++) { setTimeout(createBalloon, i * 300); }
         }
 
-        document.addEventListener('mousemove', (e) => {
-            let xAxis = (window.innerWidth / 2 - e.pageX) / 20;
-            let yAxis = (window.innerHeight / 2 - e.pageY) / 20;
-            card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
-        });
+        function showReasons() {
+            const reasons = document.querySelectorAll('.reason');
+            reasons.forEach((r, index) => {
+                setTimeout(() => { r.classList.add('show'); }, (index + 1) * 1200);
+            });
+        }
+
+        function createBalloon() {
+            const b = document.createElement('div');
+            b.className = 'balloon';
+            b.style.left = Math.random() * 90 + 'vw';
+            b.style.backgroundColor = ['#ff4d6d','#ffb3c1','#ffccd5','#ff758c'][Math.floor(Math.random()*4)];
+            document.body.appendChild(b);
+        }
+
+        function saveAsImage() {
+            const btn = document.getElementById('shotBtn');
+            btn.style.display = 'none'; // Hide button for the photo
+            html2canvas(document.getElementById('captureArea'), {
+                backgroundColor: "#fff0f3"
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'MomsBirthdayCard.png';
+                link.href = canvas.toDataURL();
+                link.click();
+                btn.style.display = 'block'; // Show button again
+            });
+        }
     </script>
 </body>
 </html>
